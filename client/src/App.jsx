@@ -15,7 +15,7 @@ import Blog from "./Blog";
 import Contact from "./Contact";
 import Resume from "./Resume";
 import McMaster from "./McMaster";
-import Header from "./layout/Header";
+import Navbar from "./layout/Navbar";
 
 function CurrentPath() {
   const location = useLocation();
@@ -25,8 +25,8 @@ function CurrentPath() {
 function App() {
   return (
     <Router>
-      <div>
-        <Header />
+      <div className="flex justify-center">
+        <Navbar />
         <CurrentPath />
 
         <Routes>
