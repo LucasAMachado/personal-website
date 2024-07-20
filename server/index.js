@@ -1,4 +1,6 @@
 const express = require('express');
+const { authenticateToken } = require('./auth'); // Import the authentication middleware
+const authRoutes = require('./authRoutes'); // Import authentication routes
 const {
     createProject, readProjects, updateProject, deleteProject,
     createBlogPost, readBlogPosts, updateBlogPost, deleteBlogPost,
@@ -8,6 +10,9 @@ const {
 
 const app = express();
 app.use(express.json());
+
+// Authentication routes
+app.use('/auth', authRoutes);
 
 // PROJECT routes
 app.get('/projects', (req, res) => {
@@ -20,7 +25,7 @@ app.get('/projects', (req, res) => {
     });
 });
 
-app.post('/projects', (req, res) => {
+app.post('/projects', authenticateToken, (req, res) => {
     const { title, description, imagePath } = req.body;
     createProject(title, description, imagePath, (err, data) => {
         if (err) {
@@ -31,7 +36,7 @@ app.post('/projects', (req, res) => {
     });
 });
 
-app.put('/projects/:id', (req, res) => {
+app.put('/projects/:id', authenticateToken, (req, res) => {
     const { title, description, imagePath } = req.body;
     updateProject(req.params.id, title, description, imagePath, (err) => {
         if (err) {
@@ -42,7 +47,7 @@ app.put('/projects/:id', (req, res) => {
     });
 });
 
-app.delete('/projects/:id', (req, res) => {
+app.delete('/projects/:id', authenticateToken, (req, res) => {
     deleteProject(req.params.id, (err) => {
         if (err) {
             res.status(500).send(err.message);
@@ -63,7 +68,7 @@ app.get('/blog-posts', (req, res) => {
     });
 });
 
-app.post('/blog-posts', (req, res) => {
+app.post('/blog-posts', authenticateToken, (req, res) => {
     const { title, body } = req.body;
     createBlogPost(title, body, (err, data) => {
         if (err) {
@@ -74,7 +79,7 @@ app.post('/blog-posts', (req, res) => {
     });
 });
 
-app.put('/blog-posts/:id', (req, res) => {
+app.put('/blog-posts/:id', authenticateToken, (req, res) => {
     const { title, body } = req.body;
     updateBlogPost(req.params.id, title, body, (err) => {
         if (err) {
@@ -85,7 +90,7 @@ app.put('/blog-posts/:id', (req, res) => {
     });
 });
 
-app.delete('/blog-posts/:id', (req, res) => {
+app.delete('/blog-posts/:id', authenticateToken, (req, res) => {
     deleteBlogPost(req.params.id, (err) => {
         if (err) {
             res.status(500).send(err.message);
@@ -106,7 +111,7 @@ app.get('/resume', (req, res) => {
     });
 });
 
-app.post('/resume', (req, res) => {
+app.post('/resume', authenticateToken, (req, res) => {
     const { filePath } = req.body;
     uploadResume(filePath, (err, data) => {
         if (err) {
@@ -117,7 +122,7 @@ app.post('/resume', (req, res) => {
     });
 });
 
-app.put('/resume/:id', (req, res) => {
+app.put('/resume/:id', authenticateToken, (req, res) => {
     const { filePath } = req.body;
     updateResume(req.params.id, filePath, (err) => {
         if (err) {
@@ -139,7 +144,7 @@ app.get('/notes', (req, res) => {
     });
 });
 
-app.post('/notes', (req, res) => {
+app.post('/notes', authenticateToken, (req, res) => {
     const { title, pdfPath, className } = req.body;
     createNote(title, pdfPath, className, (err, data) => {
         if (err) {
@@ -150,7 +155,7 @@ app.post('/notes', (req, res) => {
     });
 });
 
-app.put('/notes/:id', (req, res) => {
+app.put('/notes/:id', authenticateToken, (req, res) => {
     const { title, pdfPath, className } = req.body;
     updateNote(req.params.id, title, pdfPath, className, (err) => {
         if (err) {
@@ -161,7 +166,7 @@ app.put('/notes/:id', (req, res) => {
     });
 });
 
-app.delete('/notes/:id', (req, res) => {
+app.delete('/notes/:id', authenticateToken, (req, res) => {
     deleteNote(req.params.id, (err) => {
         if (err) {
             res.status(500).send(err.message);
